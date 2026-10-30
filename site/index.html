@@ -184,6 +184,14 @@ body{font-size:15px}
 #contact .btn{font-size:15px;padding:10px 16px}
 .fab{width:46px;height:46px;inset-inline-start:12px;bottom:calc(12px + env(safe-area-inset-bottom,0px))}
 .fab svg{width:24px;height:24px}
+
+/* ===== صور الاستعراض أوضح وأكبر ===== */
+.accs{grid-template-columns:1fr}
+.acc .media{aspect-ratio:16/9;width:100%}
+.acc .media small{font-size:15px}
+@media(min-width:900px){
+  .accs{grid-template-columns:repeat(auto-fill,minmax(300px,1fr))}
+}
 </style>
 </head>
 <body>
