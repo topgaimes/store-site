@@ -225,6 +225,19 @@ h1,h2,h3,.acc h3,.banner h1{color:#f7d57e}
 .rev .st{color:#f7d57e;letter-spacing:2px;font-size:15px}
 .rev .nm{font-weight:700;margin:4px 0}
 .rev .tx{color:var(--muted);font-size:14px;line-height:1.7}
+
+/* ===== تقييمات صغيرة مستطيلة ===== */
+.revs{grid-template-columns:repeat(auto-fill,minmax(145px,1fr));gap:8px}
+.rev{padding:7px 9px;border-radius:8px}
+.rev .st{font-size:11px;letter-spacing:1px}
+.rev .nm{font-size:12.5px;margin:2px 0}
+.rev .tx{font-size:11.5px;line-height:1.5}
+
+/* ===== تقييمات كثيرة: سحب أفقي ===== */
+.revs{display:flex;direction:ltr;overflow-x:auto;gap:8px;padding-bottom:6px;-webkit-overflow-scrolling:touch}
+.revs::-webkit-scrollbar{height:4px}
+.revs::-webkit-scrollbar-thumb{background:var(--line);border-radius:4px}
+.rev{flex:0 0 150px}
 </style>
 </head>
 <body>
@@ -442,8 +455,25 @@ function renderRevs(){
     return "<div class='rev'><div class='st'>"+"★".repeat(n)+"☆".repeat(5-n)+"</div><div class='nm'>"+escH(r.name||"زبون")+"</div><div class='tx'>"+escH(r.text)+"</div></div>";
   }).join("");
 }
+function startRevScroll(){
+  var box=document.getElementById("revs");
+  if(!box||box._auto)return;
+  box._auto=true;
+  if(window.matchMedia&&matchMedia("(prefers-reduced-motion:reduce)").matches)return;
+  var paused=false;
+  box.addEventListener("touchstart",function(){paused=true},{passive:true});
+  box.addEventListener("touchend",function(){setTimeout(function(){paused=false},1500)});
+  box.addEventListener("mouseenter",function(){paused=true});
+  box.addEventListener("mouseleave",function(){paused=false});
+  setInterval(function(){
+    if(paused||box.scrollWidth<=box.clientWidth)return;
+    box.scrollLeft+=0.5;
+    if(box.scrollLeft+box.clientWidth>=box.scrollWidth-1)box.scrollLeft=0;
+  },30);
+}
 function initAll(){
   renderRevs();
+  startRevScroll();
   render();
   ["wa","fab","fwa"].forEach(function(id){var e=document.getElementById(id);if(e)e.href=wa("السلام عليكم، عندي استفسار")});
   renderBanners();initSlider();
