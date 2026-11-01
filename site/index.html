@@ -466,8 +466,8 @@ h1,h2,h3,.acc h3,.banner h1{color:#f7d57e}
   </div>
 </div>
 <div class="sellcta"><a class="btn sellbtn" href="#" onclick="openSell();return false">نشر حسابك — اضغط هنا</a></div>
-<button class="aiFab" id="aiFab" type="button" aria-label="مساعد المتجر" onclick="aiToggle()">💬</button>
-<div class="aiBox" id="aiBox" role="dialog" aria-label="مساعد المتجر">
+<button class="aiFab" id="aiFab" type="button" aria-label="مساعد توب قيمز" onclick="aiToggle()">💬</button>
+<div class="aiBox" id="aiBox" role="dialog" aria-label="مساعد توب قيمز">
   <div class="aiHead"><span>مساعد توب قيمز</span><button type="button" onclick="aiToggle()" aria-label="إغلاق">✕</button></div>
   <div class="aiMsgs" id="aiMsgs"></div>
   <div class="aiQuick">
@@ -749,7 +749,7 @@ function aiToggle(){
   var open=!b.classList.contains("on");
   b.classList.toggle("on",open);
   if(open && !document.getElementById("aiMsgs").children.length){
-    aiAdd("bot","هلا بك في مساعد توب قيمز! اختر سؤالك من الأزرار تحت أو اكتبه.");
+    aiAdd("bot","هلا! أنا مساعد توب قيمز. اختر سؤالك من الأزرار تحت أو اكتبه.");
   }
 }
 function renderClosed(){
