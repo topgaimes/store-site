@@ -354,11 +354,11 @@ h1,h2,h3,.acc h3,.banner h1{color:#f7d57e}
 .avcount{text-align:center;margin:6px 0 14px;font-size:15px;font-weight:700;color:var(--gem);text-shadow:0 0 10px rgba(61,220,255,.35)}
 
 /* ===== ميزات إضافية ===== */
-#annBar{position:sticky;top:0;z-index:25;overflow:hidden;white-space:nowrap;background:#02050f;border-bottom:1px solid #1c7bff;box-shadow:0 0 18px rgba(0,128,255,.45);padding:8px 0}
-.annTxt{display:inline-block;padding-inline-start:0;font-weight:900;font-size:15px;color:#bff3ff;animation:annMarquee 14s linear infinite,annNeon 1.8s ease-in-out infinite}
-@keyframes annMarquee{0%{transform:translateX(100%)}100%{transform:translateX(-100%)}}
+#annBar{position:relative;margin:14px auto 6px;max-width:560px;text-align:center;background:rgba(2,5,16,.85);border:1px solid #1c7bff;border-radius:14px;box-shadow:0 0 18px rgba(0,128,255,.45);padding:10px 14px}
+.annTxt{display:inline-block;font-weight:900;font-size:16px;line-height:1.7;color:#bff3ff;animation:annFlicker 3.2s linear infinite,annNeon 2.2s ease-in-out infinite}
+@keyframes annFlicker{0%,19%,21%,23%,25%,54%,56%,100%{opacity:1}20%,24%,55%{opacity:.55}}
 @keyframes annNeon{0%,100%{text-shadow:0 0 6px #3ddcff,0 0 14px #0a7bff}50%{text-shadow:0 0 14px #3ddcff,0 0 28px #0a7bff,0 0 40px #0050ff}}
-@media(prefers-reduced-motion:reduce){.annTxt{animation:annNeon 1.8s ease-in-out infinite}}
+@media(prefers-reduced-motion:reduce){.annTxt{animation:none;text-shadow:0 0 10px #3ddcff,0 0 20px #0a7bff}}}
 .sortbar{display:flex;justify-content:flex-end;margin:0 0 10px}
 .sortbar select{background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:7px 10px;color:var(--text);font:inherit;font-size:13px}
 .newtag{position:absolute;top:8px;inset-inline-end:8px;background:#ffd24d;color:#1a1200;font-weight:800;font-size:11px;padding:2px 9px;border-radius:99px;z-index:2}
@@ -782,7 +782,8 @@ function renderAnn(){
   var old=document.getElementById("annBar"); if(old) old.remove();
   if(!ANN_ON||!ANN) return;
   var b=document.createElement("div"); b.id="annBar"; var t=document.createElement("span"); t.className="annTxt"; t.textContent=ANN; b.appendChild(t);
-  document.body.insertBefore(b, document.body.firstChild);
+  var dots=document.getElementById("dots");
+  if(dots) dots.insertAdjacentElement("afterend", b); else document.getElementById("slider").insertAdjacentElement("afterend", b);
 }
 function sortedAccs(){
   var v=(ACCS||[]).slice();
