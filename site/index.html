@@ -371,6 +371,20 @@ h1,h2,h3,.acc h3,.banner h1{color:#f7d57e}
 #bgFx{position:fixed;inset:-20%;z-index:-1;pointer-events:none;background:radial-gradient(circle at 28% 32%,rgba(0,128,255,.22),transparent 42%),radial-gradient(circle at 72% 68%,rgba(61,220,255,.14),transparent 40%),radial-gradient(circle at 50% 100%,rgba(0,90,255,.16),transparent 50%);animation:bgDrift 9s ease-in-out infinite alternate}
 @keyframes bgDrift{0%{transform:translate(-6%,-4%) scale(1)}100%{transform:translate(8%,6%) scale(1.15)}}
 @media(prefers-reduced-motion:reduce){#bgFx{animation:none}}
+
+/* ===== تحسينات المتجر ===== */
+.btn:active{transform:scale(.96);box-shadow:0 0 22px rgba(61,220,255,.8)}
+.btn{transition:transform .12s,box-shadow .2s}
+.logo img{animation:logoBob 4.5s ease-in-out infinite}
+@keyframes logoBob{0%,100%{transform:translateY(0)}50%{transform:translateY(-3px)}}
+.findbar{display:flex;gap:8px;margin:0 0 10px}
+.findbar input{flex:1;min-width:0;background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:9px 12px;color:var(--text);font:inherit;font-size:14px}
+.findbar select{background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:8px 10px;color:var(--text);font:inherit;font-size:13px}
+.lightmode body{background:#eef6ff!important;color:#0b1a2e!important}
+.lightmode #bgFx{display:none}
+.lightmode{--bg:#f4f9ff;--panel:#ffffff;--panel2:#eaf2ff;--text:#0b1a2e;--muted:#4a5a70;--line:#c9d8ea}
+.lightmode h1,.lightmode h2{color:#0b3a7a!important;-webkit-text-fill-color:initial}
+.lightmode .acc,.lightmode .pack,.lightmode .box{box-shadow:0 6px 24px rgba(0,60,140,.12)}
 </style>
 </head>
 <body>
@@ -415,6 +429,15 @@ h1,h2,h3,.acc h3,.banner h1{color:#f7d57e}
   <section class="box" id="accounts">
     <div class="head"><div><h2>حسابات للبيع</h2><p>اسأل عن الحساب قبل الشراء وتأكد من بياناته</p></div></div>
     <div class="avcount" id="avCount"></div>
+    <div class="findbar">
+      <input id="accSearch" type="search" placeholder="ابحث بالكود أو المستوى" oninput="render()" aria-label="بحث الحسابات">
+      <select id="accPrice" onchange="render()" aria-label="فلترة السعر">
+        <option value="all">كل الأسعار</option>
+        <option value="low">أقل من 10 د.ك</option>
+        <option value="mid">من 10 إلى 20 د.ك</option>
+        <option value="high">أكثر من 20 د.ك</option>
+      </select>
+    </div>
     <div class="sortbar"><select id="sortSel" onchange="render()" aria-label="ترتيب الحسابات"><option value="def">الترتيب الافتراضي</option><option value="asc">السعر: الأقل أولاً</option><option value="desc">السعر: الأعلى أولاً</option></select></div>
     <div class="accs" id="accs"></div>
   </section>
@@ -512,7 +535,11 @@ h1,h2,h3,.acc h3,.banner h1{color:#f7d57e}
   <details><summary>كيف الدفع؟</summary><p>نتفق على طريقة الدفع بالواتساب حسب الطلب.</p></details>
   <details><summary>أبي أبيع حسابي</summary><p>اضغط زر «نشر حسابك» أسفل المتجر، وعبّي الخطوات، وبتوصلنا الرسالة على الواتساب.</p></details>
 </section>
-<div class="sharebox"><button class="btn ghost" type="button" onclick="shareStore()">شارك المتجر</button></div>
+<div class="sharebox">
+  <button class="btn ghost" type="button" onclick="shareStore()">شارك المتجر</button>
+  <button class="btn ghost" type="button" onclick="reviewAsk()">أرسل تقييمك</button>
+  <button class="btn ghost" type="button" onclick="themeToggle()" id="themeBtn">🌓 الوضع</button>
+</div>
 <footer>
     <div class="fgrid">
       <div><h4>توب قيمز</h4>شحن جواهر فري فاير وحسابات جاهزة، والتواصل مباشر على واتساب.</div>
@@ -829,7 +856,25 @@ function sortedAccs(){
   var m=(document.getElementById("sortSel")||{}).value||"def";
   if(m==="asc") v.sort(function(x,y){return x.p-y.p});
   if(m==="desc") v.sort(function(x,y){return y.p-x.p});
+  var q=((document.getElementById("accSearch")||{}).value||"").trim().toLowerCase();
+  var pr=(document.getElementById("accPrice")||{}).value||"all";
+  if(q) v=v.filter(function(a){return String(a.c).indexOf(q)>-1||String(a.lv||"").toLowerCase().indexOf(q)>-1||String(a.t||"").toLowerCase().indexOf(q)>-1});
+  if(pr==="low") v=v.filter(function(a){return a.p<10});
+  if(pr==="mid") v=v.filter(function(a){return a.p>=10&&a.p<=20});
+  if(pr==="high") v=v.filter(function(a){return a.p>20});
   return v;
+}
+function reviewAsk(){
+  var m="السلام عليكم، أبي أرسل تقييمي لتجربتي مع توب قيمز: ";
+  window.open(wa(m),"_blank");
+}
+function themeToggle(){
+  var on=!document.documentElement.classList.contains("lightmode");
+  document.documentElement.classList.toggle("lightmode",on);
+  try{localStorage.setItem("theme",on?"light":"dark")}catch(e){}
+}
+function themeInit(){
+  try{ if(localStorage.getItem("theme")==="light") document.documentElement.classList.add("lightmode"); }catch(e){}
 }
 function shareStore(){
   var u=location.href.split("#")[0];
@@ -854,6 +899,7 @@ function renderClosed(){
   var w=document.querySelector("a[href^='https://wa.me/']"); if(w) o.querySelector("a.clwa").href=w.href;
 }
 function initAll(){
+  themeInit();
   bgFx();
   sndOn=SOUND_ON;
   renderAnn();
