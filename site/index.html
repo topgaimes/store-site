@@ -366,6 +366,12 @@ h1,h2,h3,.acc h3,.banner h1{color:#f7d57e}
 .faq summary{cursor:pointer;font-weight:800;color:var(--text)}
 .faq details p{margin-top:8px;color:var(--muted);font-size:14px;line-height:1.7}
 .sharebox{display:flex;justify-content:center;margin:20px 0 8px}
+
+/* ===== الصوت والخلفية المتحركة ===== */
+#bgFx{position:fixed;inset:-20%;z-index:-1;pointer-events:none;background:radial-gradient(circle at 28% 32%,rgba(0,128,255,.22),transparent 42%),radial-gradient(circle at 72% 68%,rgba(61,220,255,.14),transparent 40%),radial-gradient(circle at 50% 100%,rgba(0,90,255,.16),transparent 50%);animation:bgDrift 18s ease-in-out infinite alternate}
+@keyframes bgDrift{0%{transform:translate(0,0) scale(1)}100%{transform:translate(4%,3%) scale(1.05)}}
+.sndBtn{position:fixed;bottom:calc(84px + env(safe-area-inset-bottom,0px));inset-inline-start:16px;width:44px;height:44px;border-radius:50%;border:1px solid var(--gem);background:var(--panel);color:var(--text);font-size:18px;cursor:pointer;z-index:49;box-shadow:0 0 14px rgba(61,220,255,.4)}
+@media(prefers-reduced-motion:reduce){#bgFx{animation:none}}
 </style>
 </head>
 <body>
@@ -508,6 +514,7 @@ h1,h2,h3,.acc h3,.banner h1{color:#f7d57e}
   <details><summary>أبي أبيع حسابي</summary><p>اضغط زر «نشر حسابك» أسفل المتجر، وعبّي الخطوات، وبتوصلنا الرسالة على الواتساب.</p></details>
 </section>
 <div class="sharebox"><button class="btn ghost" type="button" onclick="shareStore()">شارك المتجر</button></div>
+<button class="sndBtn" id="sndBtn" type="button" aria-label="الصوت" onclick="sndToggle()">🔇</button>
 <footer>
     <div class="fgrid">
       <div><h4>توب قيمز</h4>شحن جواهر فري فاير وحسابات جاهزة، والتواصل مباشر على واتساب.</div>
@@ -778,6 +785,40 @@ function aiToggle(){
     aiAdd("bot","هلا! أنا مساعد توب قيمز. اختر سؤالك من الأزرار تحت أو اكتبه.");
   }
 }
+var sndOn=false;
+try{sndOn=localStorage.getItem("snd")==="1"}catch(e){}
+function sndLabel(){var b=document.getElementById("sndBtn"); if(b){b.textContent=sndOn?"🔊":"🔇";b.setAttribute("aria-pressed",sndOn?"true":"false")}}
+function sndToggle(){
+  sndOn=!sndOn;
+  try{localStorage.setItem("snd",sndOn?"1":"0")}catch(e){}
+  sndLabel();
+  if(sndOn) playChime();
+}
+function playChime(){
+  try{
+    var AC=window.AudioContext||window.webkitAudioContext; if(!AC) return;
+    var ctx=new AC(), o=ctx.createOscillator(), g=ctx.createGain(), t=ctx.currentTime;
+    o.type="sine";
+    o.frequency.setValueAtTime(880,t);
+    o.frequency.exponentialRampToValueAtTime(1320,t+0.12);
+    g.gain.setValueAtTime(0.0001,t);
+    g.gain.exponentialRampToValueAtTime(0.22,t+0.02);
+    g.gain.exponentialRampToValueAtTime(0.0001,t+0.45);
+    o.connect(g); g.connect(ctx.destination);
+    o.start(t); o.stop(t+0.5);
+    setTimeout(function(){ try{ctx.close()}catch(e){} },700);
+  }catch(e){}
+}
+function bgFx(){
+  if(document.getElementById("bgFx")) return;
+  var d=document.createElement("div"); d.id="bgFx"; d.setAttribute("aria-hidden","true");
+  document.body.insertBefore(d, document.body.firstChild);
+}
+document.addEventListener("click", function(e){
+  if(!sndOn) return;
+  var t=e.target; if(!t||!t.closest) return;
+  if(t.closest(".btn,.pack,.row,.media,.sellbtn,.aiFab,.aiQuick button,.sndBtn")) playChime();
+}, true);
 function renderAnn(){
   var old=document.getElementById("annBar"); if(old) old.remove();
   if(!ANN_ON||!ANN) return;
@@ -815,6 +856,8 @@ function renderClosed(){
   var w=document.querySelector("a[href^='https://wa.me/']"); if(w) o.querySelector("a.clwa").href=w.href;
 }
 function initAll(){
+  bgFx();
+  sndLabel();
   renderAnn();
   renderClosed();
   renderAvail();
