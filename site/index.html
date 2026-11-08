@@ -428,6 +428,19 @@ h1,h2,h3,.acc h3,.banner h1{color:#f7d57e}
 .acc:has(.vip-tag)::before{background:linear-gradient(90deg,#b8860b,#ffd24d,#fff3b0,#ffd24d,#b8860b,#ffd24d,#b8860b);background-size:300% 100%;animation:ringFlow 2.6s linear infinite;filter:drop-shadow(0 0 6px #ffd24d);z-index:3}
 @keyframes ringFlow{0%{background-position:0% 0}100%{background-position:300% 0}}
 @media(prefers-reduced-motion:reduce){.acc::before{animation:none}}
+
+/* ===== الضوء يتحرك بشكل عشوائي داخل الإطار ===== */
+@keyframes ringRandom{0%{background-position:0% 0}13%{background-position:82% 0}27%{background-position:146% 0}41%{background-position:31% 0}58%{background-position:219% 0}72%{background-position:97% 0}86%{background-position:268% 0}100%{background-position:300% 0}}
+.acc::before{animation:ringRandom 7s ease-in-out infinite}
+.acc:has(.vip-tag)::before{animation:ringRandom 4.8s ease-in-out infinite}
+/* ===== VIP بارزة لقدام ===== */
+.acc:has(.vip-tag){transform:translateY(-6px);z-index:2;box-shadow:0 18px 36px rgba(255,170,30,.38),0 0 34px rgba(255,210,77,.4)}
+.acc:has(.vip-tag) .vip-tag{transform:translateY(-2px);box-shadow:0 0 14px rgba(255,210,77,.9)}
+@media(prefers-reduced-motion:reduce){.acc::before,.acc:has(.vip-tag)::before{animation:none}}
+
+/* ===== نيون الإعلان يمشي داخل الإطار بدون دوران ===== */
+#annBar::before{inset:0;padding:2px;border-radius:inherit;animation:ringRandom 6s ease-in-out infinite;transform:none;background:linear-gradient(90deg,#0a3cff,#3ddcff,#ffffff,#3ddcff,#0a3cff,#3ddcff,#0a3cff);background-size:300% 100%;filter:drop-shadow(0 0 5px #3ddcff)}
+@media(prefers-reduced-motion:reduce){#annBar::before{animation:none}}
 </style>
 </head>
 <body>
@@ -506,56 +519,6 @@ h1,h2,h3,.acc h3,.banner h1{color:#f7d57e}
   <section class="box" id="reviews" style="display:none"><div class="head"><div><h2>تقييمات العملاء</h2><p>آراء زبائننا</p></div></div><div class="revs" id="revs"></div></section>
 
 
-<div class="sellov" id="sellOv" role="dialog" aria-modal="true" aria-label="نشر حساب">
-  <button class="sellx" type="button" onclick="closeSell()" aria-label="إغلاق">✕</button>
-  <div class="sellbox">
-    <h2 class="sttl">نشر حساب للبيع</h2>
-    <div class="sprog"><span id="sProgTxt">الخطوة 1 من 7</span><div class="bar"><i id="sBar"></i></div></div>
-    <form id="sellForm" autocomplete="off" onsubmit="return sellSubmit(event)">
-    <div class="wstep" data-s="1">
-      <label class="qlbl" for="sCode">اسم الحساب أو الكود</label>
-      <input id="sCode" type="text"  maxlength="60" placeholder="مثال: حساب فير 8 ليوم" >
-      <p class="hint">اكتب اسم أو كود واضح للحساب</p>
-    </div>
-    <div class="wstep" data-s="2">
-      <label class="qlbl" for="sLv">المستوى</label>
-      <input id="sLv" type="text"  maxlength="60" placeholder="مثال: 60" >
-      <p class="hint">رقم مستوى الحساب</p>
-    </div>
-    <div class="wstep" data-s="3">
-      <label class="qlbl" for="sSk">عدد السكنات</label>
-      <input id="sSk" type="text"  maxlength="60" placeholder="مثال: 42" >
-      <p class="hint">عدد السكنات الموجودة بالحساب</p>
-    </div>
-    <div class="wstep" data-s="4">
-      <label class="qlbl" for="sCt">المحتوى</label>
-      <input id="sCt" type="text"  maxlength="60" placeholder="مثال: أسلحة نادرة وملابس" >
-      <p class="hint">وش فيه بالحساب باختصار</p>
-    </div>
-    <div class="wstep" data-s="5">
-      <label class="qlbl" for="sPr">السعر بالدينار</label>
-      <input id="sPr" type="number" step="0.01" min="0" maxlength="60" placeholder="مثال: 12" >
-      <p class="hint">السعر اللي تبيه (د.ك)</p>
-    </div>
-    <div class="wstep" data-s="6">
-      <label class="qlbl" for="sVd">صور الحساب (8 صور)</label>
-      <input id="sVd" type="file" accept="image/*" multiple>
-      <p class="hint" id="sPhotoCount">اختر 8 صور توضح الحساب</p>
-    </div>
-    <div class="wstep" data-s="7">
-      <label class="qlbl" for="sWa">رقم واتسابك</label>
-      <input id="sWa" type="tel"  maxlength="60" placeholder="مثال: 96512345678" >
-      <p class="hint">نرد عليك على هذا الرقم</p>
-    </div>
-      <div class="wnav">
-        <button type="button" class="btn ghost" id="sBtnPrev" onclick="sPrev()" style="visibility:hidden">السابق</button>
-        <button type="button" class="btn" id="sBtnNext" onclick="sNext()">التالي</button>
-        <button type="submit" class="btn" id="sBtnSend" style="display:none">إرسال عبر واتساب</button>
-      </div>
-    </form>
-  </div>
-</div>
-<div class="sellcta"><a class="btn sellbtn" href="#" onclick="openSell();return false">نشر حسابك — اضغط هنا</a></div>
 <button class="aiFab" id="aiFab" type="button" aria-label="مساعد توب قيمز" onclick="aiToggle()">💬</button>
 <div class="aiBox" id="aiBox" role="dialog" aria-label="مساعد توب قيمز">
   <div class="aiHead"><span>مساعد توب قيمز</span><button type="button" onclick="aiToggle()" aria-label="إغلاق">✕</button></div>
@@ -576,12 +539,11 @@ h1,h2,h3,.acc h3,.banner h1{color:#f7d57e}
   <details><summary>كيف أطلب؟</summary><p>اختر الباقة أو الحساب، واضغط «اطلب على واتساب»، وبتفتح لك رسالة جاهزة نرد عليك فيها.</p></details>
   <details><summary>هل الحسابات مضمونة؟</summary><p>كل حساب له كود واستعراض قبل الشراء، وتقدر تسأل عن بياناته قبل ما تقرر.</p></details>
   <details><summary>كيف الدفع؟</summary><p>نتفق على طريقة الدفع بالواتساب حسب الطلب.</p></details>
-  <details><summary>أبي أبيع حسابي</summary><p>اضغط زر «نشر حسابك» أسفل المتجر، وعبّي الخطوات، وبتوصلنا الرسالة على الواتساب.</p></details>
+  <details><summary>أبي أبيع حسابي</summary><p>لنشر حسابك للبيع تواصل معنا على الواتساب وبنرد عليك.</p></details>
 </section>
 <div class="sharebox">
   <button class="btn ghost" type="button" onclick="shareStore()">شارك المتجر</button>
   <button class="btn ghost" type="button" onclick="reviewAsk()">أرسل تقييمك</button>
-  <button class="btn ghost" type="button" onclick="themeToggle()" id="themeBtn">🌓 الوضع</button>
 </div>
 <footer>
     <div class="fgrid">
@@ -840,7 +802,7 @@ function aiReply(q){
     return "طريقة الطلب:\n1) اختر الباقة أو الحساب\n2) اكتب الايدي (للجواهر)\n3) اضغط «اطلب على واتساب» وبترسل لك الرسالة جاهزة.";
   }
   if(/بيع|انشر|نشر|أبيع|ابيع/.test(s)){
-    return "تقدر تنشر حسابك من زر «نشر حسابك — اضغط هنا» أسفل المتجر، وتعبّي الخطوات وبتصل رسالتك لنا على الواتساب.";
+    return "لنشر حسابك للبيع تواصل معنا على الواتساب وبنرد عليك.";
   }
   if(/واتس|رقم|تواصل|اتصل|كلم/.test(s)){
     return "تواصل معنا على واتساب: "+wa+"\nأو من زر «تواصل معنا» بالمتجر.";
@@ -960,7 +922,6 @@ function renderClosed(){
   var w=document.querySelector("a[href^='https://wa.me/']"); if(w) o.querySelector("a.clwa").href=w.href;
 }
 function initAll(){
-  themeInit();
   bgFx();
   sndOn=SOUND_ON;
   renderAnn();
